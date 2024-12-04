@@ -47,6 +47,37 @@ async function run() {
             const result = await cursor.toArray();
             res.send(result)
         })
+        //PUT: get the data for update from database
+        app.put('/products/:id', async (req, res) => {
+            const id = req.params.id;
+            console.log('please update this id from database', id);
+            const updateid = {
+                _id: new ObjectId(id)
+            };
+            const options = {
+                upsert: true
+            }
+            const updatedEquipment = req.body;
+            const updateFields = {
+                $set: {
+                  image: updatedEquipment.image,
+                  itemName: updatedEquipment.itemName,
+                  categoryName: updatedEquipment.categoryName,
+                  description: updatedEquipment.description,
+                  price: updatedEquipment.price,
+                  rating: updatedEquipment.rating,
+                  customization: updatedEquipment.customization,
+                  processingTime: updatedEquipment.processingTime,
+                  stockStatus: updatedEquipment.stockStatus,
+                  userEmail: updatedEquipment.userEmail,
+                  userName: updatedEquipment.userName,
+                },
+              };
+              
+            const result = await productsClt.updateOne(updateid, updateFields, options)
+            res.send(result)
+
+        })
 
 
     } finally {
