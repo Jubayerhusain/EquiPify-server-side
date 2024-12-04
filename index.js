@@ -34,14 +34,20 @@ async function run() {
             res.send('Hello hey jubayer hi')
         })
         // Creating a Database name and collection name
-        const database = client.db('equipifyDB').collection('products');
+        const productsClt = client.db('equipifyDB').collection('products');
 
         // POST: get the data from client side and post to databse
         app.post('/products', async(req,res)=>{
             const newProduct = req.body;
             console.log(newProduct);
-            const result = await database.insertOne(newProduct);
+            const result = await productsClt.insertOne(newProduct);
             res.send(result);
+        })
+        // GET: get the all product from database
+        app.get('/products', async(req,res)=>{
+            const cursor = productsClt.find();
+            const result = await cursor.toArray();
+            res.send(result)
         })
 
 
