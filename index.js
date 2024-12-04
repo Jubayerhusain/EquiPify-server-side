@@ -10,7 +10,8 @@ app.use(express.json());
 
 const {
     MongoClient,
-    ServerApiVersion
+    ServerApiVersion,
+    ObjectId
 } = require('mongodb');
 const uri = `mongodb+srv://${process.env.USER_NAME}:${process.env.PASSWORD}@cluster0.wr4sb.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
@@ -35,14 +36,14 @@ async function run() {
         const productsClt = client.db('equipifyDB').collection('products');
 
         // POST: get the data from client side and post to databse
-        app.post('/products', async(req,res)=>{
+        app.post('/products', async (req, res) => {
             const newProduct = req.body;
             console.log(newProduct);
             const result = await productsClt.insertOne(newProduct);
             res.send(result);
         })
         // GET: get the all product from database
-        app.get('/products', async(req,res)=>{
+        app.get('/products', async (req, res) => {
             const cursor = productsClt.find();
             const result = await cursor.toArray();
             res.send(result)
@@ -50,34 +51,44 @@ async function run() {
         //PUT: get the data for update from database
         app.put('/products/:id', async (req, res) => {
             const id = req.params.id;
-            console.log('please update this id from database', id);
-            const updateid = {
-                _id: new ObjectId(id)
-            };
-            const options = {
-                upsert: true
-            }
-            const updatedEquipment = req.body;
-            const updateFields = {
-                $set: {
-                  image: updatedEquipment.image,
-                  itemName: updatedEquipment.itemName,
-                  categoryName: updatedEquipment.categoryName,
-                  description: updatedEquipment.description,
-                  price: updatedEquipment.price,
-                  rating: updatedEquipment.rating,
-                  customization: updatedEquipment.customization,
-                  processingTime: updatedEquipment.processingTime,
-                  stockStatus: updatedEquipment.stockStatus,
-                  userEmail: updatedEquipment.userEmail,
-                  userName: updatedEquipment.userName,
-                },
-              };
-              
-            const result = await productsClt.updateOne(updateid, updateFields, options)
-            res.send(result)
+            const updatedData = req.body;
 
-        })
+            try {
+                const result = await productsClt.updateOne({
+                    _id: new ObjectId(id)
+                }, {
+                    $set: updatedData
+                });
+
+                res.status(200).send(result.modifiedCount > 0 ?
+                    {
+                        success: true,
+                        message: 'Product updated successfully.'
+                    } :
+                    {
+                        success: false,
+                        message: 'No changes made to the product.'
+                    }
+                );
+            } catch (error) {
+                console.error('Error updating product:', error);
+                res.status(500).send({
+                    success: false,
+                    message: 'Internal server error.'
+                });
+            }
+        });
+
+        // GET: get the single data from database
+        app.get('/products/:id', async (req, res) => {
+                const id = req.params.id;
+                const filter = { _id: new ObjectId(id) };
+                const result = await productsClt.findOne(filter);
+                res.send(result)
+
+        });
+        
+
 
 
     } finally {
