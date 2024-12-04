@@ -49,35 +49,35 @@ async function run() {
             res.send(result)
         })
         //PUT: get the data for update from database
-        app.put('/products/:id', async (req, res) => {
-            const id = req.params.id;
-            const updatedData = req.body;
+        // app.put('/products/:id', async (req, res) => {
+        //     const id = req.params.id;
+        //     const updatedData = req.body;
 
-            try {
-                const result = await productsClt.updateOne({
-                    _id: new ObjectId(id)
-                }, {
-                    $set: updatedData
-                });
+        //     try {
+        //         const result = await productsClt.updateOne({
+        //             _id: new ObjectId(id)
+        //         }, {
+        //             $set: updatedData
+        //         });
 
-                res.status(200).send(result.modifiedCount > 0 ?
-                    {
-                        success: true,
-                        message: 'Product updated successfully.'
-                    } :
-                    {
-                        success: false,
-                        message: 'No changes made to the product.'
-                    }
-                );
-            } catch (error) {
-                console.error('Error updating product:', error);
-                res.status(500).send({
-                    success: false,
-                    message: 'Internal server error.'
-                });
-            }
-        });
+        //         res.status(200).send(result.modifiedCount > 0 ?
+        //             {
+        //                 success: true,
+        //                 message: 'Product updated successfully.'
+        //             } :
+        //             {
+        //                 success: false,
+        //                 message: 'No changes made to the product.'
+        //             }
+        //         );
+        //     } catch (error) {
+        //         console.error('Error updating product:', error);
+        //         res.status(500).send({
+        //             success: false,
+        //             message: 'Internal server error.'
+        //         });
+        //     }
+        // });
 
         // GET: get the single data from database
         app.get('/products/:id', async (req, res) => {
