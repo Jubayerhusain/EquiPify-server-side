@@ -51,7 +51,9 @@ async function run() {
         //GET: get the data of category
         app.get('/products/category/:categoryName', async (req, res) => {
             const category = req.params.categoryName;
-            const filter = {categoryName: category};
+            const filter = {
+                categoryName: category
+            };
             const result = await productsClt.find(filter).toArray();
             res.send(result)
         })
@@ -68,62 +70,40 @@ async function run() {
 
         });
         // GET: get the product user email
-        app.get('/products/email/:userEmail', async (req,res)=>{
+        app.get('/products/email/:userEmail', async (req, res) => {
             const email = req.params.userEmail;
-            const filter = {userEmail: email};
-            const result  = await productsClt.find(filter).toArray();
+            const filter = {
+                userEmail: email
+            };
+            const result = await productsClt.find(filter).toArray();
             res.send(result)
         })
         // create a database collaection for users 
         const usersClt = client.db('equipifyDB').collection('users');
         // POST: get the user data from client side and post to usersClt collection;
-        app.post('/users', async(req, res)=>{
+        app.post('/users', async (req, res) => {
             const newUser = req.body;
             console.log(newUser);
             const result = await usersClt.insertOne(newUser);
             res.send(result);
         })
         //GET: get the user data from database
-        app.get('/users', async(req, res)=>{
+        app.get('/users', async (req, res) => {
             const cursor = usersClt.find();
             const result = await cursor.toArray();
             res.send(result)
         })
         //PUT: get the data for update from database
-        // app.put('/products/:id', async (req, res) => {
-        //     const id = req.params.id;
-        //     const updatedData = req.body;
-
-        //     try {
-        //         const result = await productsClt.updateOne({
-        //             _id: new ObjectId(id)
-        //         }, {
-        //             $set: updatedData
-        //         });
-
-        //         res.status(200).send(result.modifiedCount > 0 ?
-        //             {
-        //                 success: true,
-        //                 message: 'Product updated successfully.'
-        //             } :
-        //             {
-        //                 success: false,
-        //                 message: 'No changes made to the product.'
-        //             }
-        //         );
-        //     } catch (error) {
-        //         console.error('Error updating product:', error);
-        //         res.status(500).send({
-        //             success: false,
-        //             message: 'Internal server error.'
-        //         });
-        //     }
-        // });
-
-
-
-
-
+        app.put('/products/:id', async (req, res) => {
+            const id = req.params.id;
+            const updatedData = req.body;
+            const result = await productsClt.updateOne({
+                _id: new ObjectId(id)
+            }, {
+                $set: updatedData
+            });
+            res.send(result);
+        })
     } finally {
         // Ensures that the client will close when you finish/error
         // await client.close();
