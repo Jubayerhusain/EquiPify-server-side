@@ -67,7 +67,13 @@ async function run() {
             res.send(result)
 
         });
-
+        // GET: get the product user email
+        app.get('/products/email/:userEmail', async (req,res)=>{
+            const email = req.params.userEmail;
+            const filter = {userEmail: email};
+            const result  = await productsClt.find(filter).toArray();
+            res.send(result)
+        })
         // create a database collaection for users 
         const usersClt = client.db('equipifyDB').collection('users');
         // POST: get the user data from client side and post to usersClt collection;
