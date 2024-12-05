@@ -104,6 +104,15 @@ async function run() {
             });
             res.send(result);
         })
+        //DELETE: Delete the product from database
+        app.delete('/products/:id', async(req, res)=>{
+            const id = req.params.id;
+            const deletedId = {
+                _id: new ObjectId(id)
+            };
+            const result = await productsClt.deleteOne(deletedId);
+            res.send(result)
+        })
     } finally {
         // Ensures that the client will close when you finish/error
         // await client.close();
