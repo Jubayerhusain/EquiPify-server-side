@@ -77,8 +77,12 @@ async function run() {
             const result = await usersClt.insertOne(newUser);
             res.send(result);
         })
-
-
+        //GET: get the user data from database
+        app.get('/users', async(req, res)=>{
+            const cursor = usersClt.find();
+            const result = await cursor.toArray();
+            res.send(result)
+        })
         //PUT: get the data for update from database
         // app.put('/products/:id', async (req, res) => {
         //     const id = req.params.id;
