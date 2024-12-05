@@ -49,12 +49,24 @@ async function run() {
             res.send(result)
         })
         //GET: get the data of category
-        app.get('/products/:categoryName', async (req, res) => {
+        app.get('/products/category/:categoryName', async (req, res) => {
             const category = req.params.categoryName;
             const filter = {categoryName: category};
             const result = await productsClt.find(filter).toArray();
             res.send(result)
         })
+
+        // GET: get the single data from database
+        app.get('/products/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = {
+                _id: new ObjectId(id)
+
+            };
+            const result = await productsClt.findOne(filter);
+            res.send(result)
+
+        });
         //PUT: get the data for update from database
         // app.put('/products/:id', async (req, res) => {
         //     const id = req.params.id;
@@ -86,16 +98,6 @@ async function run() {
         //     }
         // });
 
-        // GET: get the single data from database
-        app.get('/products/:id', async (req, res) => {
-            const id = req.params.id;
-            const filter = {
-                _id: new ObjectId(id)
-            };
-            const result = await productsClt.findOne(filter);
-            res.send(result)
-
-        });
 
 
 
