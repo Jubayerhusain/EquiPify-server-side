@@ -67,6 +67,18 @@ async function run() {
             res.send(result)
 
         });
+
+        // create a database collaection for users 
+        const usersClt = client.db('equipifyDB').collection('users');
+        // POST: get the user data from client side and post to usersClt collection;
+        app.post('/users', async(req, res)=>{
+            const newUser = req.body;
+            console.log(newUser);
+            const result = await usersClt.insertOne(newUser);
+            res.send(result);
+        })
+
+
         //PUT: get the data for update from database
         // app.put('/products/:id', async (req, res) => {
         //     const id = req.params.id;
